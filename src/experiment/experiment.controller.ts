@@ -20,9 +20,4 @@ export class ExperimentController {
     const token: string = req.headers.devicetoken;
     return this.experimentService.findAll(token);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.experimentService.findOne(+id);
-  // }
 }
