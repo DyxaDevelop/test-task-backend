@@ -1,31 +1,48 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Task 
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+We create mobile applications and sometimes we have to run AB tests to test hypotheses. To do this, we need a system that is the simplest REST API, consisting of one endpoint.
+## API and distribution
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+At startup, the mobile application generates some unique client ID (which is saved between sessions) and requests a list of experiments by adding the Device-Token HTTP header. In response, the server returns a list of experiments. For each experiment, the client receives:
 
-## Description
+  Key: the name of the experiment. There is some code in the client that will change some behavior depending on the value of this key 
+  Value: string, one of the possible options (see below)
+It is important that the device falls into one group and always remains in it.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Experiments
+1. Button color
+We hypothesize that the color of the "buy" button affects the conversion to a purchase.
+Key: button_color
+Options:
+  - #FF0000 → 33.3%
+  - #00FF00 → 33.3%
+  - #0000FF → 33.3%
 
+
+So after 600 requests to the API with different DeviceToken, 200 devices should receive each color2.Purchase cost
+We hypothesize that a change in the cost of an in-app purchase may affect our profit margin. But in order not to lose money in the event of an unsuccessful experiment, 75% of users will receive the old price and only on a small part of the audience we will test the change:
+### Key price
+Options:
+  - 10 → 75%
+  - 20 → 10%
+  - 50 → 5%
+  - 5 → 10%
+## Requirements and Limitations
+If the device once received a value, then it will always receive only that value.
+The experiment is carried out only for new devices: if the experiment was created after the first request from the device, then the device should not know anything about this experiment
+## Task
+- Design, describe and implement an API
+- Add experiments (1) and (2) to your app
+- Create a page for statistics: a simple table with a list of experiments, the total number of devices participating in the experiment and their distribution between options
+Any technology and libraries can be used
+
+### As Advantage will be:
+- Availability of tests
+- Deployed version of the application
+- Server response speed <100ms
+- The table is powered by React with the ability to sort and filter by columns
+
+ 
 ## Installation
 
 ```bash
@@ -45,29 +62,3 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
